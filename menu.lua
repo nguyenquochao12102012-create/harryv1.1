@@ -319,3 +319,4 @@ task.wait(1)
 LoadingFrame:Destroy()
 MenuIcon.Visible = true
 
+
