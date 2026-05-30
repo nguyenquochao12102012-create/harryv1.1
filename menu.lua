@@ -1,4 +1,4 @@
--- [[ SCRIPT MOD MENU HARRY V2.8 - FIX MOTION UPDATE ]] --
+-- [[ SCRIPT MOD MENU HARRY V3.0 - FULL DRAGGABLE UPDATE ]] --
 
 if game.CoreGui:FindFirstChild("MyModMenu") then
     game.CoreGui.MyModMenu:Destroy()
@@ -10,6 +10,8 @@ MyModMenu.Parent = game.CoreGui
 MyModMenu.ResetOnSpawn = false
 
 local DogImageID = "rbxassetid://18225573650" 
+local TweenService = game:GetService("TweenService")
+local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
 -- ==========================================
 --  PHẦN 1: GIAO DIỆN CHÀO MỪNG (LOADING SCREEN)
@@ -23,7 +25,7 @@ LoadingFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 LoadingFrame.BorderSizePixel = 0
 
 local LoadingCorner = Instance.new("UICorner")
-LoadingCorner.CornerRadius = UDim.new(0, 0) -- Hình vuông
+LoadingCorner.CornerRadius = UDim.new(0, 0)
 LoadingCorner.Parent = LoadingFrame
 
 local UIStroke = Instance.new("UIStroke")
@@ -35,7 +37,7 @@ local LoadingText = Instance.new("TextLabel")
 LoadingText.Parent = LoadingFrame
 LoadingText.Size = UDim2.new(1, 0, 0.5, 0)
 LoadingText.Position = UDim2.new(0, 0, 0.1, 0)
-LoadingText.Text = "HARRY V2.8 PRO"
+LoadingText.Text = "HARRY V3.0 PRO"
 LoadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
 LoadingText.Font = Enum.Font.FredokaOne
 LoadingText.TextSize = 26
@@ -45,14 +47,14 @@ local SubText = Instance.new("TextLabel")
 SubText.Parent = LoadingFrame
 SubText.Size = UDim2.new(1, 0, 0.3, 0)
 SubText.Position = UDim2.new(0, 0, 0.65, 0)
-SubText.Text = "Đang tinh chỉnh hành động tay vuốt đứng yên..."
+SubText.Text = "Đang tích hợp tính năng kéo thả Menu chính..."
 SubText.TextColor3 = Color3.fromRGB(150, 150, 150)
 SubText.Font = Enum.Font.SourceSansItalic
 SubText.TextSize = 13
 SubText.BackgroundTransparency = 1
 
 -- ==========================================
---  PHẦN 2: GIAO DIỆN CHÍNH HÌNH VUÔNG
+--  PHẦN 2: GIAO DIỆN CHÍNH HÌNH VUÔNG + DRAGGABLE
 -- ==========================================
 local MenuIcon = Instance.new("ImageButton")
 MenuIcon.Name = "MenuIcon"
@@ -74,7 +76,9 @@ MainFrame.Parent = MyModMenu
 MainFrame.Size = UDim2.new(0, 260, 0, 460)
 MainFrame.Position = UDim2.new(0.15, 0, 0.1, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.ClipsDescendants = true
 MainFrame.Visible = false
+local OriginalSize = MainFrame.Size
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 0)
@@ -103,7 +107,7 @@ local Title = Instance.new("TextLabel")
 Title.Parent = MainFrame
 Title.Size = UDim2.new(1, 0, 0, 25)
 Title.Position = UDim2.new(0, 0, 0, 85)
-Title.Text = "HARRY V2.8 - PRO MENU"
+Title.Text = "HARRY V3.0 - PRO MENU"
 Title.TextColor3 = Color3.fromRGB(0, 255, 150)
 Title.Font = Enum.Font.SourceSansBold
 Title.TextSize = 15
@@ -136,21 +140,52 @@ UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Padding = UDim.new(0, 7)
 
+-- ==========================================
+--  HỆ THỐNG KÉO THẢ (DRAG) CHO CẢ ICON VÀ MENU
+-- ==========================================
 local UserInputService = game:GetService("UserInputService")
-local dragging, dragInput, dragStart, startPos
-MenuIcon.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true; dragStart = input.Position; startPos = MenuIcon.Position
+
+local function MakeDraggable(guiObject)
+    local dragging, dragInput, dragStart, startPos
+    guiObject.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true
+            dragStart = input.Position
+            startPos = guiObject.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then dragging = false end
+            end)
+        end
+    end)
+    guiObject.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - dragStart
+            guiObject.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+end
+
+-- Kích hoạt kéo thả cho Icon tròn và khung Menu chính luôn
+MakeDraggable(MenuIcon)
+MakeDraggable(MainFrame)
+
+-- Hiệu ứng mở/đóng menu mượt
+MenuIcon.MouseButton1Click:Connect(function()
+    if MainFrame.Visible then
+        local closeTween = TweenService:Create(MainFrame, tweenInfo, {Size = UDim2.new(0, 260, 0, 0)})
+        closeTween:Play()
+        closeTween.Completed:Connect(function() MainFrame.Visible = false end)
+    else
+        MainFrame.Size = UDim2.new(0, 260, 0, 0)
+        MainFrame.Visible = true
+        TweenService:Create(MainFrame, tweenInfo, {Size = OriginalSize}):Play()
     end
 end)
-UserInputService.InputChanged:Connect(function(input)
-    if (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) and dragging then
-        local delta = input.Position - dragStart
-        MenuIcon.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = false end end)
-MenuIcon.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
 local function CreateButton(text, order)
     local btn = Instance.new("TextButton")
@@ -169,7 +204,7 @@ local function CreateButton(text, order)
 end
 
 -- ==========================================
---  PHẦN 3: LẬP TRÌNH CÁC CHỨC NĂNG
+--  PHẦN 3: LẬP TRÌNH CÁC CHỨC NĂNG CHUẨN VẬT LÝ
 -- ==========================================
 local LocalPlayer = game.Players.LocalPlayer
 local RunService = game:GetService("RunService")
@@ -238,13 +273,13 @@ RunService.Stepped:Connect(function()
     end
 end)
 
--- 6. Bay Tự Do Khi Di Chuyển
-local FlyBtn = CreateButton("Bay Tự Do (Khi di chuyển): TẮT", 6)
+-- 6. Bay Tự Do Theo Hướng Camera (Có bay cao)
+local FlyBtn = CreateButton("Bay Tự Do (Theo Camera): TẮT", 6)
 local flying = false
-local flySpeed = 50
+local flySpeed = 60
 FlyBtn.MouseButton1Click:Connect(function()
     flying = not flying
-    FlyBtn.Text = flying and "Bay Tự Do (Khi di chuyển): BẬT" or "Bay Tự Do (Khi di chuyển): TẮT"
+    FlyBtn.Text = flying and "Bay Tự Do (Theo Camera): BẬT" or "Bay Tự Do (Theo Camera): TẮT"
     FlyBtn.BackgroundColor3 = flying and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
     FlyBtn.TextColor3 = flying and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
     
@@ -257,15 +292,24 @@ FlyBtn.MouseButton1Click:Connect(function()
         
         local bv = Instance.new("BodyVelocity", p)
         bv.maxForce = Vector3.new(4e5, 4e5, 4e5)
-        bv.velocity = Vector3.new(0, 0.1, 0)
+        bv.velocity = Vector3.new(0, 0, 0)
         
         spawn(function()
             while flying and char and p.Parent do
                 RunService.RenderStepped:Wait()
                 bg.cframe = workspace.CurrentCamera.CFrame
+                
                 local moveDir = char.Humanoid.MoveDirection
                 if moveDir.Magnitude > 0 then
-                    bv.velocity = moveDir * flySpeed
+                    local camCFrame = workspace.CurrentCamera.CFrame
+                    local lookVec = camCFrame.LookVector
+                    
+                    local flyVector = Vector3.new(0,0,0)
+                    if UserInputService:IsKeyDown(Enum.KeyCode.W) or moveDir.Magnitude > 0 then
+                        flyVector = lookVec
+                    end
+                    
+                    bv.velocity = flyVector * flySpeed
                 else
                     bv.velocity = Vector3.new(0, 0, 0)
                 end
@@ -275,7 +319,7 @@ FlyBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 7. Hành Động Nằm
+-- 7. Hành Động Nằm Phẳng Cố Định Chống Lật
 local LieBtn = CreateButton("Hành Động Nằm: TẮT", 7)
 local lyingDown = false
 LieBtn.MouseButton1Click:Connect(function()
@@ -286,32 +330,48 @@ LieBtn.MouseButton1Click:Connect(function()
     
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
-        local rootJoint = char.HumanoidRootPart:FindFirstChild("RootJoint") or char.LowerTorso:FindFirstChild("Root")
+        local p = char.HumanoidRootPart
+        local rootJoint = p:FindFirstChild("RootJoint") or char.LowerTorso:FindFirstChild("Root")
         if rootJoint then
             if lyingDown then
                 char.Humanoid.PlatformStand = true
-                rootJoint.C0 = rootJoint.C0 * CFrame.Angles(math.rad(90), 0, 0) * CFrame.new(0, 0, -2)
+                rootJoint.C0 = CFrame.new(0, -2, 0) * CFrame.Angles(math.rad(90), 0, 0)
             else
                 char.Humanoid.PlatformStand = false
-                if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-                    rootJoint.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), math.rad(180), 0)
-                else
-                    rootJoint.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(180), 0)
-                end
+                rootJoint.C0 = char.Humanoid.RigType == Enum.HumanoidRigType.R6 and CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), math.rad(180), 0) or CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(180), 0)
             end
         end
     end
 end)
 
--- 8. Tư thế ngồi
-local SitBtn = CreateButton("Hành Động: NGỒI XUỐNG", 8)
+-- 8. Hành Động Ngồi Thẳng Chống Lật
+local SitBtn = CreateButton("Hành Động Ngồi: TẮT", 8)
+local sittingDown = false
 SitBtn.MouseButton1Click:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        LocalPlayer.Character.Humanoid.Sit = not LocalPlayer.Character.Humanoid.Sit
+    sittingDown = not sittingDown
+    SitBtn.Text = sittingDown and "Hành Động Ngồi: BẬT" or "Hành Động Ngồi: TẮT"
+    SitBtn.BackgroundColor3 = sittingDown and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
+    SitBtn.TextColor3 = sittingDown and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        local p = char.HumanoidRootPart
+        local rootJoint = p:FindFirstChild("RootJoint") or char.LowerTorso:FindFirstChild("Root")
+        if rootJoint then
+            if sittingDown then
+                char.Humanoid.PlatformStand = true
+                rootJoint.C0 = CFrame.new(0, -1, 0) * CFrame.Angles(0, math.rad(180), 0)
+                char.Humanoid.Sit = true
+            else
+                char.Humanoid.PlatformStand = false
+                char.Humanoid.Sit = false
+                rootJoint.C0 = char.Humanoid.RigType == Enum.HumanoidRigType.R6 and CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), math.rad(180), 0) or CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(180), 0)
+            end
+        end
     end
 end)
 
--- 9. [ĐÃ SỬA CHUẨN ĐỨNG YÊN] CHỨC NĂNG JERK CHỈ DI CHUYỂN CÁNH TAY VUỐT LÊN XUỐNG
+-- 9. JERK TAY CAO ĐỨNG IM MƯỢT MÀ
 local JerkBtn = CreateButton("Hành động Jerk: TẮT", 9)
 local jerking = false
 JerkBtn.MouseButton1Click:Connect(function()
@@ -324,28 +384,21 @@ JerkBtn.MouseButton1Click:Connect(function()
         while jerking and task.wait() do
             pcall(function()
                 local char = LocalPlayer.Character
-                -- Lấy khớp vai phải nối giữa thân và cánh tay
                 local rShoulder = char:FindFirstChild("Right Shoulder", true) or char.Torso:FindFirstChild("Right Shoulder")
                 
                 if rShoulder then
-                    -- Khóa cơ thể đứng im, chỉ lặp lại góc xoay của cánh tay phải để làm động tác vuốt lên xuống
-                    rShoulder.C0 = rShoulder.C0 * CFrame.Angles(math.rad(40), 0, 0)
-                    task.wait(0.05)
-                    rShoulder.C0 = rShoulder.C0 * CFrame.Angles(math.rad(-40), 0, 0)
-                    task.wait(0.05)
+                    rShoulder.C0 = rShoulder.C0 * CFrame.Angles(math.rad(65), 0, 0) * CFrame.new(0, 0.2, 0)
+                    task.wait(0.04)
+                    rShoulder.C0 = rShoulder.C0 * CFrame.Angles(math.rad(-65), 0, 0) * CFrame.new(0, -0.2, 0)
+                    task.wait(0.04)
                 end
             end)
         end
-        -- Trả khớp tay phải về vị trí đứng im mặc định khi tắt tính năng
         pcall(function()
             local char = LocalPlayer.Character
             local rShoulder = char:FindFirstChild("Right Shoulder", true) or char.Torso:FindFirstChild("Right Shoulder")
             if rShoulder then
-                if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-                    rShoulder.C0 = CFrame.new(1, 0.5, 0) * CFrame.Angles(0, math.rad(90), 0)
-                else
-                    rShoulder.C0 = CFrame.new(1, 0.5, 0) * CFrame.Angles(0, 0, 0)
-                end
+                rShoulder.C0 = char.Humanoid.RigType == Enum.HumanoidRigType.R6 and CFrame.new(1, 0.5, 0) * CFrame.Angles(0, math.rad(90), 0) or CFrame.new(1, 0.5, 0) * CFrame.Angles(0, 0, 0)
             end
         end)
     end)
@@ -385,10 +438,10 @@ SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
 end)
 
 -- ==========================================
---  HIỆU ỨNG CHẠY KHI MỞ
+--  HIỆU ỨNG KHỞI ĐỘNG
 -- ==========================================
 task.wait(1.5)
-SubText.Text = "Đang hoàn tất cấu trúc hoạt họa..."
+SubText.Text = "Kích hoạt hệ thống kéo thả đa nhiệm..."
 task.wait(1)
 LoadingFrame:Destroy()
 MenuIcon.Visible = true
