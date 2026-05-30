@@ -221,7 +221,148 @@ WallhopBtn.MouseButton1Click:Connect(function()
     wallhopEnabled = not wallhopEnabled
     WallhopBtn.Text = wallhopEnabled and "Wallhop Nhảy Bám Tường: BẬT" or "Wallhop Nhảy Bám Tường: TẮT"
     WallhopBtn.BackgroundColor3 = wallhopEnabled and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
-    WallhopBtn.TextColor3 = wallhopEnabled and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 2
+    WallhopBtn.TextColor3 = wallhopEnabled and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+end)
+UserInputService.JumpRequest:Connect(function()
+    if wallhopEnabled and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)
+
+-- 5. Noclip Xuyên Tường
+local NoclipBtn = CreateButton("Noclip Xuyên Tường: TẮT", 5)
+local noclip = false
+NoclipBtn.MouseButton1Click:Connect(function()
+    noclip = not noclip
+    NoclipBtn.Text = noclip and "Noclip Xuyên Tường: BẬT" or "Noclip Xuyên Tường: TẮT"
+    NoclipBtn.BackgroundColor3 = noclip and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
+    NoclipBtn.TextColor3 = noclip and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+end)
+RunService.Stepped:Connect(function()
+    if noclip and LocalPlayer.Character then
+        for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") then part.CanCollide = false end
+        end
+    end
+end)
+
+-- 6. Bay Tự Do
+local FlyBtn = CreateButton("Bay Tự Do: TẮT", 6)
+local flying = false
+FlyBtn.MouseButton1Click:Connect(function()
+    flying = not flying
+    FlyBtn.Text = flying and "Bay Tự Do: BẬT" or "Bay Tự Do: TẮT"
+    FlyBtn.BackgroundColor3 = flying and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
+    FlyBtn.TextColor3 = flying and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+    local char = LocalPlayer.Character
+    if flying and char then
+        local bg = Instance.new("BodyGyro", char.HumanoidRootPart); bg.maxTorque = Vector3.new(4e5, 4e5, 4e5); bg.cframe = char.HumanoidRootPart.CFrame
+        local bv = Instance.new("BodyVelocity", char.HumanoidRootPart); bv.maxForce = Vector3.new(4e5, 4e5, 4e5); bv.velocity = Vector3.new(0, 0.1, 0)
+        spawn(function()
+            while flying and char and char:FindFirstChild("HumanoidRootPart") do
+                RunService.RenderStepped:Wait()
+                bv.velocity = workspace.CurrentCamera.CFrame.LookVector * (char.Humanoid.WalkSpeed * 2)
+                bg.cframe = workspace.CurrentCamera.CFrame
+            end
+            bg:Destroy(); bv:Destroy()
+        end)
+    end
+end)
+
+-- 7. Tư thế nằm
+local LieBtn = CreateButton("Hành Động: NẰM XUỐNG", 7)
+LieBtn.MouseButton1Click:Connect(function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Ragdoll)
+    end
+end)
+
+-- 8. Tư thế ngồi
+local SitBtn = CreateButton("Hành Động: NGỒI XUỐNG", 8)
+SitBtn.MouseButton1Click:Connect(function()
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+        LocalPlayer.Character.Humanoid.Sit = not LocalPlayer.Character.Humanoid.Sit
+    end
+end)
+
+-- 9. Jerk (Hành động "Sục")
+local JerkBtn = CreateButton("Hành động Jerk: TẮT", 9)
+local jerking = false
+JerkBtn.MouseButton1Click:Connect(function()
+    jerking = not jerking
+    JerkBtn.Text = jerking and "Hành động Jerk: BẬT" or "Hành động Jerk: TẮT"
+    JerkBtn.BackgroundColor3 = jerking and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
+    JerkBtn.TextColor3 = jerking and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+    
+    spawn(function()
+        while jerking and task.wait() do
+            pcall(function()
+                local char = LocalPlayer.Character
+                local rootJoint = char.HumanoidRootPart:FindFirstChild("RootJoint") or char.LowerTorso:FindFirstChild("Root")
+                if rootJoint then
+                    rootJoint.C0 = rootJoint.C0 * CFrame.new(0, 0, 0.6)
+                    task.wait(0.04)
+                    rootJoint.C0 = rootJoint.C0 * CFrame.new(0, 0, -0.6)
+                    task.wait(0.04)
+                end
+            end)
+        end
+        pcall(function()
+            local char = LocalPlayer.Character
+            local rootJoint = char.HumanoidRootPart:FindFirstChild("RootJoint") or char.LowerTorso:FindFirstChild("Root")
+            if rootJoint then
+                if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
+                    rootJoint.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), math.rad(180), 0)
+                else
+                    rootJoint.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(180), 0)
+                end
+            end
+        end)
+    end)
+end)
+
+-- 10. Tàng Hình Cục Bộ
+local InvisBtn = CreateButton("Tàng Hình Cục Bộ: TẮT", 10)
+local invisible = false
+InvisBtn.MouseButton1Click:Connect(function()
+    invisible = not invisible
+    InvisBtn.Text = invisible and "Tàng Hình Cục Bộ: BẬT" or "Tàng Hình Cục Bộ: TẮT"
+    InvisBtn.BackgroundColor3 = invisible and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
+    InvisBtn.TextColor3 = invisible and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+    if LocalPlayer.Character then
+        for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+            if part:IsA("BasePart") or part:IsA("Decal") then
+                if part.Name ~= "HumanoidRootPart" then part.Transparency = invisible and 1 or 0 end
+            end
+        end
+    end
+end)
+
+-- ==========================================
+--  LOGIC XỬ LÝ LỌC TÌM KIẾM THEO TỪ KHÓA
+-- ==========================================
+SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
+    local textInput = string.lower(SearchBar.Text)
+    for _, child in pairs(Container:GetChildren()) do
+        if child:IsA("TextButton") or child:IsA("TextBox") then
+            if textInput == "" then
+                child.Visible = true
+            else
+                if string.find(string.lower(child.Name), textInput) then child.Visible = true else child.Visible = false end
+            end
+        end
+    end
+end)
+
+-- ==========================================
+--  HIỆU ỨNG CHẠY KHI MỞ
+-- ==========================================
+task.wait(1.5)
+SubText.Text = "Đang tối ưu hóa cấu trúc vuông..."
+task.wait(1)
+LoadingFrame:Destroy()
+MenuIcon.Visible = true
+
             
 
 
