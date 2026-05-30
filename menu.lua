@@ -1,4 +1,4 @@
--- [[ SCRIPT MOD MENU HARRY V2.6 - SQUARE TOTAL UPDATE (SEARCH & TELE) ]] --
+-- [[ SCRIPT MOD MENU HARRY V2.8 - FIX MOTION UPDATE ]] --
 
 if game.CoreGui:FindFirstChild("MyModMenu") then
     game.CoreGui.MyModMenu:Destroy()
@@ -9,7 +9,6 @@ MyModMenu.Name = "MyModMenu"
 MyModMenu.Parent = game.CoreGui
 MyModMenu.ResetOnSpawn = false
 
--- ID Hình ảnh chú chó streamer từ ảnh của bạn
 local DogImageID = "rbxassetid://18225573650" 
 
 -- ==========================================
@@ -23,13 +22,12 @@ LoadingFrame.Position = UDim2.new(0.5, -150, 0.5, -80)
 LoadingFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 LoadingFrame.BorderSizePixel = 0
 
--- Chỉnh góc vuông cho giao diện loading
 local LoadingCorner = Instance.new("UICorner")
-LoadingCorner.CornerRadius = UDim.new(0, 0) -- 0 pixel = Hình vuông hoàn toàn
+LoadingCorner.CornerRadius = UDim.new(0, 0) -- Hình vuông
 LoadingCorner.Parent = LoadingFrame
 
 local UIStroke = Instance.new("UIStroke")
-UIStroke.Color = Color3.fromRGB(0, 255, 150) -- Màu xanh Neon
+UIStroke.Color = Color3.fromRGB(0, 255, 150)
 UIStroke.Thickness = 2
 UIStroke.Parent = LoadingFrame
 
@@ -37,7 +35,7 @@ local LoadingText = Instance.new("TextLabel")
 LoadingText.Parent = LoadingFrame
 LoadingText.Size = UDim2.new(1, 0, 0.5, 0)
 LoadingText.Position = UDim2.new(0, 0, 0.1, 0)
-LoadingText.Text = "HARRY V2.6 PRO"
+LoadingText.Text = "HARRY V2.8 PRO"
 LoadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
 LoadingText.Font = Enum.Font.FredokaOne
 LoadingText.TextSize = 26
@@ -47,14 +45,14 @@ local SubText = Instance.new("TextLabel")
 SubText.Parent = LoadingFrame
 SubText.Size = UDim2.new(1, 0, 0.3, 0)
 SubText.Position = UDim2.new(0, 0, 0.65, 0)
-SubText.Text = "Đang đồng bộ Search, Teleport & Hình vuông..."
+SubText.Text = "Đang tinh chỉnh hành động tay vuốt đứng yên..."
 SubText.TextColor3 = Color3.fromRGB(150, 150, 150)
 SubText.Font = Enum.Font.SourceSansItalic
 SubText.TextSize = 13
 SubText.BackgroundTransparency = 1
 
 -- ==========================================
---  PHẦN 2: MENU CHÍNH HÌNH VUÔNG CÓ LOGO CHÓ & SEARCH BAR
+--  PHẦN 2: GIAO DIỆN CHÍNH HÌNH VUÔNG
 -- ==========================================
 local MenuIcon = Instance.new("ImageButton")
 MenuIcon.Name = "MenuIcon"
@@ -62,7 +60,7 @@ MenuIcon.Parent = MyModMenu
 MenuIcon.Size = UDim2.new(0, 55, 0, 55)
 MenuIcon.Position = UDim2.new(0.05, 0, 0.2, 0)
 MenuIcon.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-MenuIcon.Image = DogImageID -- Hình chú chó ngoài nút bật/tắt
+MenuIcon.Image = DogImageID
 MenuIcon.Visible = false
 
 local IconStroke = Instance.new("UIStroke")
@@ -73,13 +71,13 @@ IconStroke.Parent = MenuIcon
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = MyModMenu
-MainFrame.Size = UDim2.new(0, 260, 0, 460) -- Tăng một chút chiều cao để chứa cả Logo và Search
+MainFrame.Size = UDim2.new(0, 260, 0, 460)
 MainFrame.Position = UDim2.new(0.15, 0, 0.1, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.Visible = false
 
 local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 0) -- HÌNH VUÔNG GÓC CẠNH
+MainCorner.CornerRadius = UDim.new(0, 0)
 MainCorner.Parent = MainFrame
 
 local MainFrameStroke = Instance.new("UIStroke")
@@ -87,7 +85,6 @@ MainFrameStroke.Color = Color3.fromRGB(0, 255, 150)
 MainFrameStroke.Thickness = 2
 MainFrameStroke.Parent = MainFrame
 
--- Logo chú chó gamer bên trong Menu chính (Hình vuông luôn)
 local MenuLogo = Instance.new("ImageLabel")
 MenuLogo.Name = "MenuLogo"
 MenuLogo.Parent = MainFrame
@@ -106,13 +103,12 @@ local Title = Instance.new("TextLabel")
 Title.Parent = MainFrame
 Title.Size = UDim2.new(1, 0, 0, 25)
 Title.Position = UDim2.new(0, 0, 0, 85)
-Title.Text = "HARRY V2.6 - PRO MENU"
+Title.Text = "HARRY V2.8 - PRO MENU"
 Title.TextColor3 = Color3.fromRGB(0, 255, 150)
 Title.Font = Enum.Font.SourceSansBold
 Title.TextSize = 15
 Title.BackgroundTransparency = 1
 
--- THANH TÌM KIẾM ĐƯỢC GIỮ LẠI (THIẾT KẾ HÌNH VUÔNG)
 local SearchBar = Instance.new("TextBox")
 SearchBar.Name = "SearchBar"
 SearchBar.Parent = MainFrame
@@ -126,7 +122,6 @@ SearchBar.Font = Enum.Font.SourceSans
 SearchBar.TextSize = 14
 local SearchCorner = Instance.new("UICorner") ; SearchCorner.CornerRadius = UDim.new(0,0) ; SearchCorner.Parent = SearchBar
 
--- Khung chứa danh sách cuộn các nút bấm
 local Container = Instance.new("ScrollingFrame")
 Container.Parent = MainFrame
 Container.Size = UDim2.new(1, 0, 1, -155)
@@ -141,7 +136,6 @@ UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Padding = UDim.new(0, 7)
 
--- Logic kéo thả nút icon
 local UserInputService = game:GetService("UserInputService")
 local dragging, dragInput, dragStart, startPos
 MenuIcon.InputBegan:Connect(function(input)
@@ -158,7 +152,6 @@ end)
 UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = false end end)
 MenuIcon.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
--- Hàm tạo nút bấm hình vuông
 local function CreateButton(text, order)
     local btn = Instance.new("TextButton")
     btn.Name = text
@@ -170,19 +163,18 @@ local function CreateButton(text, order)
     btn.TextSize = 14
     btn.LayoutOrder = order
     btn.Parent = Container
-    
-    local cr = Instance.new("UICorner") ; cr.CornerRadius = UDim.new(0, 0) ; cr.Parent = btn -- Ép nút con thành hình vuông
+    local cr = Instance.new("UICorner") ; cr.CornerRadius = UDim.new(0, 0) ; cr.Parent = btn
     local bs = Instance.new("UIStroke") ; bs.Color = Color3.fromRGB(60, 60, 60) ; bs.Thickness = 1 ; bs.Parent = btn
     return btn
 end
 
 -- ==========================================
---  PHẦN 3: LẬP TRÌNH TẤT CẢ CÁC CHỨC NĂNG
+--  PHẦN 3: LẬP TRÌNH CÁC CHỨC NĂNG
 -- ==========================================
 local LocalPlayer = game.Players.LocalPlayer
 local RunService = game:GetService("RunService")
 
--- 1. Tốc độ chạy (Ô Nhập hình vuông)
+-- 1. Tốc độ chạy
 local SpeedInput = Instance.new("TextBox")
 SpeedInput.Name = "Nhập Tốc Độ Chạy Speed"
 SpeedInput.Size = UDim2.new(0, 220, 0, 35); SpeedInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40); SpeedInput.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -190,7 +182,7 @@ SpeedInput.PlaceholderText = "Nhập Tốc độ chạy..."; SpeedInput.Text = "
 local sCorner = Instance.new("UICorner") ; sCorner.CornerRadius = UDim.new(0,0) ; sCorner.Parent = SpeedInput
 SpeedInput.FocusLost:Connect(function(ep) if ep and tonumber(SpeedInput.Text) then LocalPlayer.Character.Humanoid.WalkSpeed = tonumber(SpeedInput.Text) end end)
 
--- 2. Lực Nhảy Cao (Ô Nhập hình vuông)
+-- 2. Lực Nhảy Cao
 local JumpInput = Instance.new("TextBox")
 JumpInput.Name = "Nhập Lực Nhảy Cao Jump"
 JumpInput.Size = UDim2.new(0, 220, 0, 35); JumpInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40); JumpInput.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -198,7 +190,7 @@ JumpInput.PlaceholderText = "Nhập Lực nhảy cao..."; JumpInput.Text = ""; J
 local jCorner = Instance.new("UICorner") ; jCorner.CornerRadius = UDim.new(0,0) ; jCorner.Parent = JumpInput
 JumpInput.FocusLost:Connect(function(ep) if ep and tonumber(JumpInput.Text) then LocalPlayer.Character.Humanoid.JumpPower = tonumber(JumpInput.Text) LocalPlayer.Character.Humanoid.UseJumpPower = true end end)
 
--- 3. GIỮ CHỨC NĂNG TELEPORT: Ô nhập tọa độ dịch chuyển (Hình vuông)
+-- 3. Dịch chuyển tọa độ
 local TeleportInput = Instance.new("TextBox")
 TeleportInput.Name = "Dịch Chuyển Tọa Độ Teleport Tele"
 TeleportInput.Size = UDim2.new(0, 220, 0, 35); TeleportInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40); TeleportInput.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -246,34 +238,68 @@ RunService.Stepped:Connect(function()
     end
 end)
 
--- 6. Bay Tự Do
-local FlyBtn = CreateButton("Bay Tự Do: TẮT", 6)
+-- 6. Bay Tự Do Khi Di Chuyển
+local FlyBtn = CreateButton("Bay Tự Do (Khi di chuyển): TẮT", 6)
 local flying = false
+local flySpeed = 50
 FlyBtn.MouseButton1Click:Connect(function()
     flying = not flying
-    FlyBtn.Text = flying and "Bay Tự Do: BẬT" or "Bay Tự Do: TẮT"
+    FlyBtn.Text = flying and "Bay Tự Do (Khi di chuyển): BẬT" or "Bay Tự Do (Khi di chuyển): TẮT"
     FlyBtn.BackgroundColor3 = flying and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
     FlyBtn.TextColor3 = flying and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+    
     local char = LocalPlayer.Character
-    if flying and char then
-        local bg = Instance.new("BodyGyro", char.HumanoidRootPart); bg.maxTorque = Vector3.new(4e5, 4e5, 4e5); bg.cframe = char.HumanoidRootPart.CFrame
-        local bv = Instance.new("BodyVelocity", char.HumanoidRootPart); bv.maxForce = Vector3.new(4e5, 4e5, 4e5); bv.velocity = Vector3.new(0, 0.1, 0)
+    if flying and char and char:FindFirstChild("HumanoidRootPart") then
+        local p = char.HumanoidRootPart
+        local bg = Instance.new("BodyGyro", p)
+        bg.maxTorque = Vector3.new(4e5, 4e5, 4e5)
+        bg.cframe = p.CFrame
+        
+        local bv = Instance.new("BodyVelocity", p)
+        bv.maxForce = Vector3.new(4e5, 4e5, 4e5)
+        bv.velocity = Vector3.new(0, 0.1, 0)
+        
         spawn(function()
-            while flying and char and char:FindFirstChild("HumanoidRootPart") do
+            while flying and char and p.Parent do
                 RunService.RenderStepped:Wait()
-                bv.velocity = workspace.CurrentCamera.CFrame.LookVector * (char.Humanoid.WalkSpeed * 2)
                 bg.cframe = workspace.CurrentCamera.CFrame
+                local moveDir = char.Humanoid.MoveDirection
+                if moveDir.Magnitude > 0 then
+                    bv.velocity = moveDir * flySpeed
+                else
+                    bv.velocity = Vector3.new(0, 0, 0)
+                end
             end
             bg:Destroy(); bv:Destroy()
         end)
     end
 end)
 
--- 7. Tư thế nằm
-local LieBtn = CreateButton("Hành Động: NẰM XUỐNG", 7)
+-- 7. Hành Động Nằm
+local LieBtn = CreateButton("Hành Động Nằm: TẮT", 7)
+local lyingDown = false
 LieBtn.MouseButton1Click:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Ragdoll)
+    lyingDown = not lyingDown
+    LieBtn.Text = lyingDown and "Hành Động Nằm: BẬT" or "Hành Động Nằm: TẮT"
+    LieBtn.BackgroundColor3 = lyingDown and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
+    LieBtn.TextColor3 = lyingDown and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 255, 255)
+    
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        local rootJoint = char.HumanoidRootPart:FindFirstChild("RootJoint") or char.LowerTorso:FindFirstChild("Root")
+        if rootJoint then
+            if lyingDown then
+                char.Humanoid.PlatformStand = true
+                rootJoint.C0 = rootJoint.C0 * CFrame.Angles(math.rad(90), 0, 0) * CFrame.new(0, 0, -2)
+            else
+                char.Humanoid.PlatformStand = false
+                if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
+                    rootJoint.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), math.rad(180), 0)
+                else
+                    rootJoint.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(180), 0)
+                end
+            end
+        end
     end
 end)
 
@@ -285,7 +311,7 @@ SitBtn.MouseButton1Click:Connect(function()
     end
 end)
 
--- 9. Jerk (Hành động "Sục")
+-- 9. [ĐÃ SỬA CHUẨN ĐỨNG YÊN] CHỨC NĂNG JERK CHỈ DI CHUYỂN CÁNH TAY VUỐT LÊN XUỐNG
 local JerkBtn = CreateButton("Hành động Jerk: TẮT", 9)
 local jerking = false
 JerkBtn.MouseButton1Click:Connect(function()
@@ -298,23 +324,27 @@ JerkBtn.MouseButton1Click:Connect(function()
         while jerking and task.wait() do
             pcall(function()
                 local char = LocalPlayer.Character
-                local rootJoint = char.HumanoidRootPart:FindFirstChild("RootJoint") or char.LowerTorso:FindFirstChild("Root")
-                if rootJoint then
-                    rootJoint.C0 = rootJoint.C0 * CFrame.new(0, 0, 0.6)
-                    task.wait(0.04)
-                    rootJoint.C0 = rootJoint.C0 * CFrame.new(0, 0, -0.6)
-                    task.wait(0.04)
+                -- Lấy khớp vai phải nối giữa thân và cánh tay
+                local rShoulder = char:FindFirstChild("Right Shoulder", true) or char.Torso:FindFirstChild("Right Shoulder")
+                
+                if rShoulder then
+                    -- Khóa cơ thể đứng im, chỉ lặp lại góc xoay của cánh tay phải để làm động tác vuốt lên xuống
+                    rShoulder.C0 = rShoulder.C0 * CFrame.Angles(math.rad(40), 0, 0)
+                    task.wait(0.05)
+                    rShoulder.C0 = rShoulder.C0 * CFrame.Angles(math.rad(-40), 0, 0)
+                    task.wait(0.05)
                 end
             end)
         end
+        -- Trả khớp tay phải về vị trí đứng im mặc định khi tắt tính năng
         pcall(function()
             local char = LocalPlayer.Character
-            local rootJoint = char.HumanoidRootPart:FindFirstChild("RootJoint") or char.LowerTorso:FindFirstChild("Root")
-            if rootJoint then
+            local rShoulder = char:FindFirstChild("Right Shoulder", true) or char.Torso:FindFirstChild("Right Shoulder")
+            if rShoulder then
                 if char.Humanoid.RigType == Enum.HumanoidRigType.R6 then
-                    rootJoint.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(math.rad(-90), math.rad(180), 0)
+                    rShoulder.C0 = CFrame.new(1, 0.5, 0) * CFrame.Angles(0, math.rad(90), 0)
                 else
-                    rootJoint.C0 = CFrame.new(0, 0, 0) * CFrame.Angles(0, math.rad(180), 0)
+                    rShoulder.C0 = CFrame.new(1, 0.5, 0) * CFrame.Angles(0, 0, 0)
                 end
             end
         end)
@@ -358,12 +388,7 @@ end)
 --  HIỆU ỨNG CHẠY KHI MỞ
 -- ==========================================
 task.wait(1.5)
-SubText.Text = "Đang tối ưu hóa cấu trúc vuông..."
+SubText.Text = "Đang hoàn tất cấu trúc hoạt họa..."
 task.wait(1)
 LoadingFrame:Destroy()
 MenuIcon.Visible = true
-
-
-            
-
-
