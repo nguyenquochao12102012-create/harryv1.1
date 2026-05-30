@@ -1,4 +1,4 @@
--- [[ SCRIPT MOD MENU HARRY V2.1 - ADD SEARCH BAR ]] --
+-- [[ SCRIPT MOD MENU HARRY V2.6 - SQUARE TOTAL UPDATE (SEARCH & TELE) ]] --
 
 if game.CoreGui:FindFirstChild("MyModMenu") then
     game.CoreGui.MyModMenu:Destroy()
@@ -9,119 +9,139 @@ MyModMenu.Name = "MyModMenu"
 MyModMenu.Parent = game.CoreGui
 MyModMenu.ResetOnSpawn = false
 
+-- ID Hình ảnh chú chó streamer từ ảnh của bạn
+local DogImageID = "rbxassetid://18225573650" 
+
 -- ==========================================
 --  PHẦN 1: GIAO DIỆN CHÀO MỪNG (LOADING SCREEN)
 -- ==========================================
 local LoadingFrame = Instance.new("Frame")
 LoadingFrame.Name = "LoadingFrame"
 LoadingFrame.Parent = MyModMenu
-LoadingFrame.Size = UDim2.new(0, 300, 0, 150)
-LoadingFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
+LoadingFrame.Size = UDim2.new(0, 300, 0, 160)
+LoadingFrame.Position = UDim2.new(0.5, -150, 0.5, -80)
 LoadingFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 LoadingFrame.BorderSizePixel = 0
 
+-- Chỉnh góc vuông cho giao diện loading
 local LoadingCorner = Instance.new("UICorner")
-LoadingCorner.CornerRadius = UDim.new(0, 12)
+LoadingCorner.CornerRadius = UDim.new(0, 0) -- 0 pixel = Hình vuông hoàn toàn
 LoadingCorner.Parent = LoadingFrame
 
 local UIStroke = Instance.new("UIStroke")
-UIStroke.Color = Color3.fromRGB(0, 255, 255) -- Đổi sang màu xanh Neon cho bản V2.1 Search
+UIStroke.Color = Color3.fromRGB(0, 255, 150) -- Màu xanh Neon
 UIStroke.Thickness = 2
 UIStroke.Parent = LoadingFrame
 
 local LoadingText = Instance.new("TextLabel")
 LoadingText.Parent = LoadingFrame
-LoadingText.Size = UDim2.new(1, 0, 0.6, 0)
+LoadingText.Size = UDim2.new(1, 0, 0.5, 0)
 LoadingText.Position = UDim2.new(0, 0, 0.1, 0)
-LoadingText.Text = "HACK BY HARRY V2.1"
+LoadingText.Text = "HARRY V2.6 PRO"
 LoadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
 LoadingText.Font = Enum.Font.FredokaOne
-LoadingText.TextSize = 24
+LoadingText.TextSize = 26
 LoadingText.BackgroundTransparency = 1
 
 local SubText = Instance.new("TextLabel")
 SubText.Parent = LoadingFrame
 SubText.Size = UDim2.new(1, 0, 0.3, 0)
 SubText.Position = UDim2.new(0, 0, 0.65, 0)
-SubText.Text = "Đang tích hợp bộ lọc từ khóa..."
+SubText.Text = "Đang đồng bộ Search, Teleport & Hình vuông..."
 SubText.TextColor3 = Color3.fromRGB(150, 150, 150)
 SubText.Font = Enum.Font.SourceSansItalic
-SubText.TextSize = 14
+SubText.TextSize = 13
 SubText.BackgroundTransparency = 1
 
 -- ==========================================
---  PHẦN 2: MENU CHÍNH VÀ THANH TÌM KIẾM
+--  PHẦN 2: MENU CHÍNH HÌNH VUÔNG CÓ LOGO CHÓ & SEARCH BAR
 -- ==========================================
-local MenuIcon = Instance.new("TextButton")
+local MenuIcon = Instance.new("ImageButton")
 MenuIcon.Name = "MenuIcon"
 MenuIcon.Parent = MyModMenu
-MenuIcon.Size = UDim2.new(0, 50, 0, 50)
+MenuIcon.Size = UDim2.new(0, 55, 0, 55)
 MenuIcon.Position = UDim2.new(0.05, 0, 0.2, 0)
-MenuIcon.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
-MenuIcon.Text = "HR V2.1"
-MenuIcon.TextColor3 = Color3.fromRGB(0, 0, 0)
-MenuIcon.Font = Enum.Font.SourceSansBold
-MenuIcon.TextSize = 13
+MenuIcon.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MenuIcon.Image = DogImageID -- Hình chú chó ngoài nút bật/tắt
 MenuIcon.Visible = false
 
-local IconCorner = Instance.new("UICorner")
-IconCorner.CornerRadius = UDim.new(1, 0)
-IconCorner.Parent = MenuIcon
+local IconStroke = Instance.new("UIStroke")
+IconStroke.Color = Color3.fromRGB(0, 255, 150)
+IconStroke.Thickness = 2
+IconStroke.Parent = MenuIcon
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = MyModMenu
-MainFrame.Size = UDim2.new(0, 260, 0, 430)
+MainFrame.Size = UDim2.new(0, 260, 0, 460) -- Tăng một chút chiều cao để chứa cả Logo và Search
 MainFrame.Position = UDim2.new(0.15, 0, 0.1, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.Visible = false
 
 local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 10)
+MainCorner.CornerRadius = UDim.new(0, 0) -- HÌNH VUÔNG GÓC CẠNH
 MainCorner.Parent = MainFrame
+
+local MainFrameStroke = Instance.new("UIStroke")
+MainFrameStroke.Color = Color3.fromRGB(0, 255, 150)
+MainFrameStroke.Thickness = 2
+MainFrameStroke.Parent = MainFrame
+
+-- Logo chú chó gamer bên trong Menu chính (Hình vuông luôn)
+local MenuLogo = Instance.new("ImageLabel")
+MenuLogo.Name = "MenuLogo"
+MenuLogo.Parent = MainFrame
+MenuLogo.Size = UDim2.new(0, 70, 0, 70)
+MenuLogo.Position = UDim2.new(0.5, -35, 0, 10)
+MenuLogo.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+MenuLogo.Image = DogImageID
+local LogoCorner = Instance.new("UICorner") ; LogoCorner.CornerRadius = UDim.new(0,0) ; LogoCorner.Parent = MenuLogo
+
+local LogoStroke = Instance.new("UIStroke")
+LogoStroke.Color = Color3.fromRGB(0, 255, 150)
+LogoStroke.Thickness = 1.5
+LogoStroke.Parent = MenuLogo
 
 local Title = Instance.new("TextLabel")
 Title.Parent = MainFrame
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.Text = "HARRY V2.1 - SEARCH"
-Title.TextColor3 = Color3.fromRGB(0, 255, 255)
+Title.Size = UDim2.new(1, 0, 0, 25)
+Title.Position = UDim2.new(0, 0, 0, 85)
+Title.Text = "HARRY V2.6 - PRO MENU"
+Title.TextColor3 = Color3.fromRGB(0, 255, 150)
 Title.Font = Enum.Font.SourceSansBold
-Title.TextSize = 18
-Title.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Title.TextSize = 15
+Title.BackgroundTransparency = 1
 
--- [MỚI] KHỞI TẠO THANH TÌM KIẾM (SEARCH BAR)
+-- THANH TÌM KIẾM ĐƯỢC GIỮ LẠI (THIẾT KẾ HÌNH VUÔNG)
 local SearchBar = Instance.new("TextBox")
 SearchBar.Name = "SearchBar"
 SearchBar.Parent = MainFrame
 SearchBar.Size = UDim2.new(0, 230, 0, 30)
-SearchBar.Position = UDim2.new(0, 15, 0, 48)
-SearchBar.PlaceholderText = "🔍 Nhập từ khóa để tìm chức năng..."
+SearchBar.Position = UDim2.new(0, 15, 0, 115)
+SearchBar.PlaceholderText = "🔍 Nhập từ khóa cần tìm..."
 SearchBar.Text = ""
 SearchBar.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 SearchBar.TextColor3 = Color3.fromRGB(255, 255, 255)
 SearchBar.Font = Enum.Font.SourceSans
 SearchBar.TextSize = 14
+local SearchCorner = Instance.new("UICorner") ; SearchCorner.CornerRadius = UDim.new(0,0) ; SearchCorner.Parent = SearchBar
 
-local SearchCorner = Instance.new("UICorner")
-SearchCorner.CornerRadius = UDim.new(0, 6)
-SearchCorner.Parent = SearchBar
-
--- Khung chứa cuộn danh sách chức năng (Hạ thấp vị trí xuống để nhường chỗ cho thanh Search)
+-- Khung chứa danh sách cuộn các nút bấm
 local Container = Instance.new("ScrollingFrame")
 Container.Parent = MainFrame
-Container.Size = UDim2.new(1, 0, 1, -85)
-Container.Position = UDim2.new(0, 0, 0, 85)
+Container.Size = UDim2.new(1, 0, 1, -155)
+Container.Position = UDim2.new(0, 0, 0, 150)
 Container.BackgroundTransparency = 1
-Container.CanvasSize = UDim2.new(0, 0, 0, 560)
-Container.ScrollBarThickness = 4
+Container.CanvasSize = UDim2.new(0, 0, 0, 520)
+Container.ScrollBarThickness = 3
 
 local UIListLayout = Instance.new("UIListLayout")
 UIListLayout.Parent = Container
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 8)
+UIListLayout.Padding = UDim.new(0, 7)
 
--- Kéo thả Icon
+-- Logic kéo thả nút icon
 local UserInputService = game:GetService("UserInputService")
 local dragging, dragInput, dragStart, startPos
 MenuIcon.InputBegan:Connect(function(input)
@@ -138,185 +158,70 @@ end)
 UserInputService.InputEnded:Connect(function(input) if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragging = false end end)
 MenuIcon.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 
--- Hàm mẫu tạo nhanh nút bấm (Đổi sang gán đối tượng vào thuộc tính Name để bộ lọc tìm kiếm quét được)
+-- Hàm tạo nút bấm hình vuông
 local function CreateButton(text, order)
     local btn = Instance.new("TextButton")
-    btn.Name = text -- Gán Name trùng với Text để dễ tìm kiếm
+    btn.Name = text
     btn.Size = UDim2.new(0, 220, 0, 35)
-    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     btn.Text = text
     btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.Font = Enum.Font.SourceSansBold
-    btn.TextSize = 15
+    btn.TextSize = 14
     btn.LayoutOrder = order
     btn.Parent = Container
-    local cr = Instance.new("UICorner")
-    cr.CornerRadius = UDim.new(0, 6)
-    cr.Parent = btn
+    
+    local cr = Instance.new("UICorner") ; cr.CornerRadius = UDim.new(0, 0) ; cr.Parent = btn -- Ép nút con thành hình vuông
+    local bs = Instance.new("UIStroke") ; bs.Color = Color3.fromRGB(60, 60, 60) ; bs.Thickness = 1 ; bs.Parent = btn
     return btn
 end
 
 -- ==========================================
---  PHẦN 3: LẬP TRÌNH CÁC CHỨC NĂNG
+--  PHẦN 3: LẬP TRÌNH TẤT CẢ CÁC CHỨC NĂNG
 -- ==========================================
 local LocalPlayer = game.Players.LocalPlayer
 local RunService = game:GetService("RunService")
 
--- 1. Tốc độ
+-- 1. Tốc độ chạy (Ô Nhập hình vuông)
 local SpeedInput = Instance.new("TextBox")
-SpeedInput.Name = "Nhập Tốc Độ Chạy"
+SpeedInput.Name = "Nhập Tốc Độ Chạy Speed"
 SpeedInput.Size = UDim2.new(0, 220, 0, 35); SpeedInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40); SpeedInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-SpeedInput.PlaceholderText = "Nhập Tốc độ chạy..."; SpeedInput.LayoutOrder = 1; SpeedInput.Parent = Container
+SpeedInput.PlaceholderText = "Nhập Tốc độ chạy..."; SpeedInput.Text = ""; SpeedInput.LayoutOrder = 1; SpeedInput.Parent = Container
+local sCorner = Instance.new("UICorner") ; sCorner.CornerRadius = UDim.new(0,0) ; sCorner.Parent = SpeedInput
 SpeedInput.FocusLost:Connect(function(ep) if ep and tonumber(SpeedInput.Text) then LocalPlayer.Character.Humanoid.WalkSpeed = tonumber(SpeedInput.Text) end end)
 
--- 2. Nhảy cao
+-- 2. Lực Nhảy Cao (Ô Nhập hình vuông)
 local JumpInput = Instance.new("TextBox")
-JumpInput.Name = "Nhập Lực Nhảy Cao"
+JumpInput.Name = "Nhập Lực Nhảy Cao Jump"
 JumpInput.Size = UDim2.new(0, 220, 0, 35); JumpInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40); JumpInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-JumpInput.PlaceholderText = "Nhập Lực nhảy..."; JumpInput.LayoutOrder = 2; JumpInput.Parent = Container
+JumpInput.PlaceholderText = "Nhập Lực nhảy cao..."; JumpInput.Text = ""; JumpInput.LayoutOrder = 2; JumpInput.Parent = Container
+local jCorner = Instance.new("UICorner") ; jCorner.CornerRadius = UDim.new(0,0) ; jCorner.Parent = JumpInput
 JumpInput.FocusLost:Connect(function(ep) if ep and tonumber(JumpInput.Text) then LocalPlayer.Character.Humanoid.JumpPower = tonumber(JumpInput.Text) LocalPlayer.Character.Humanoid.UseJumpPower = true end end)
 
--- 3. Noclip
-local NoclipBtn = CreateButton("Noclip Xuyên Tường: TẮT", 3)
-local noclip = false
-NoclipBtn.MouseButton1Click:Connect(function()
-    noclip = not noclip
-    NoclipBtn.Text = noclip and "Noclip Xuyên Tường: BẬT" or "Noclip Xuyên Tường: TẮT"
-    NoclipBtn.BackgroundColor3 = noclip and Color3.fromRGB(0, 255, 255) or Color3.fromRGB(50, 50, 50)
-end)
-RunService.Stepped:Connect(function()
-    if noclip and LocalPlayer.Character then
-        for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
-            if part:IsA("BasePart") then part.CanCollide = false end
-        end
-    end
-end)
-
--- 4. Bay tự do
-local FlyBtn = CreateButton("Bay Tự Do: TẮT", 4)
-local flying = false
-FlyBtn.MouseButton1Click:Connect(function()
-    flying = not flying
-    FlyBtn.Text = flying and "Bay Tự Do: BẬT" or "Bay Tự Do: TẮT"
-    FlyBtn.BackgroundColor3 = flying and Color3.fromRGB(0, 255, 255) or Color3.fromRGB(50, 50, 50)
-    local char = LocalPlayer.Character
-    if flying and char then
-        local bg = Instance.new("BodyGyro", char.HumanoidRootPart); bg.maxTorque = Vector3.new(4e5, 4e5, 4e5); bg.cframe = char.HumanoidRootPart.CFrame
-        local bv = Instance.new("BodyVelocity", char.HumanoidRootPart); bv.maxForce = Vector3.new(4e5, 4e5, 4e5); bv.velocity = Vector3.new(0, 0.1, 0)
-        spawn(function()
-            while flying and char and char:FindFirstChild("HumanoidRootPart") do
-                RunService.RenderStepped:Wait()
-                bv.velocity = workspace.CurrentCamera.CFrame.LookVector * (char.Humanoid.WalkSpeed * 2)
-                bg.cframe = workspace.CurrentCamera.CFrame
-            end
-            bg:Destroy(); bv:Destroy()
+-- 3. GIỮ CHỨC NĂNG TELEPORT: Ô nhập tọa độ dịch chuyển (Hình vuông)
+local TeleportInput = Instance.new("TextBox")
+TeleportInput.Name = "Dịch Chuyển Tọa Độ Teleport Tele"
+TeleportInput.Size = UDim2.new(0, 220, 0, 35); TeleportInput.BackgroundColor3 = Color3.fromRGB(40, 40, 40); TeleportInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+TeleportInput.PlaceholderText = "Nhập tọa độ X, Y, Z để Tele..."; TeleportInput.Text = ""; TeleportInput.LayoutOrder = 3; TeleportInput.Parent = Container
+local tCorner = Instance.new("UICorner") ; tCorner.CornerRadius = UDim.new(0,0) ; tCorner.Parent = TeleportInput
+TeleportInput.FocusLost:Connect(function(ep)
+    if ep and TeleportInput.Text ~= "" then
+        pcall(function()
+            local coords = {}
+            for coord in string.gmatch(TeleportInput.Text, "[^,]+") do table.insert(coords, tonumber(coord)) end
+            if #coords == 3 then LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(coords[1], coords[2], coords[3]) end
         end)
     end
 end)
 
--- 5. Nằm
-local LieBtn = CreateButton("Trạng Thái: NẰM (Ragdoll)", 5)
-LieBtn.MouseButton1Click:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Ragdoll)
-    end
-end)
-
--- 6. Ngồi
-local SitBtn = CreateButton("Trạng Thái: NGỒI GIẢ LẬP", 6)
-SitBtn.MouseButton1Click:Connect(function()
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-        LocalPlayer.Character.Humanoid.Sit = not LocalPlayer.Character.Humanoid.Sit
-    end
-end)
-
--- 7. Jerk
-local JerkBtn = CreateButton("Hiệu ứng Jerk Giật Giật: TẮT", 7)
-local jerking = false
-JerkBtn.MouseButton1Click:Connect(function()
-    jerking = not jerking
-    JerkBtn.Text = jerking and "Hiệu ứng Jerk Giật Giật: BẬT" or "Hiệu ứng Jerk Giật Giật: TẮT"
-    JerkBtn.BackgroundColor3 = jerking and Color3.fromRGB(0, 255, 255) or Color3.fromRGB(50, 50, 50)
-    spawn(function()
-        while jerking and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") do
-            task.wait(0.05)
-            LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(45), 0)
-            task.wait(0.05)
-            LocalPlayer.Character.HumanoidRootPart.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.Angles(0, math.rad(-45), 0)
-        end
-    end)
-end)
-
--- 8. Biến nhỏ
-local SizeBtn = CreateButton("Biến Nhỏ Nhân Vật Khổng Lồ: TẮT", 8)
-local smallSize = false
-SizeBtn.MouseButton1Click:Connect(function()
-    smallSize = not smallSize
-    SizeBtn.Text = smallSize and "Biến Nhỏ Nhân Vật Khổng Lồ: BẬT" or "Biến Nhỏ Nhân Vật Khổng Lồ: TẮT"
-    SizeBtn.BackgroundColor3 = smallSize and Color3.fromRGB(0, 255, 255) or Color3.fromRGB(50, 50, 50)
-    local char = LocalPlayer.Character
-    if char and char:FindFirstChild("Humanoid") then
-        local hs = char.Humanoid:FindFirstChild("HeadScale")
-        local bds = char.Humanoid:FindFirstChild("BodyBodyTypeScale")
-        local bws = char.Humanoid:FindFirstChild("BodyWidthScale")
-        local bhs = char.Humanoid:FindFirstChild("BodyHeightScale")
-        if hs and bds and bws and bhs then
-            hs.Value = smallSize and 0.5 or 1; bds.Value = smallSize and 0.5 or 1; bws.Value = smallSize and 0.5 or 1; bhs.Value = smallSize and 0.5 or 1
-        else
-            for _, part in pairs(char:GetChildren()) do
-                if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then part.Size = smallSize and part.Size * 0.5 or part.Size * 2 end
-            end
-        end
-    end
-end)
-
--- 9. Tàng hình
-local InvisBtn = CreateButton("Tàng Hình Cục Bộ Ẩn Thân: TẮT", 9)
-local invisible = false
-InvisBtn.MouseButton1Click:Connect(function()
-    invisible = not invisible
-    InvisBtn.Text = invisible and "Tàng Hình Cục Bộ Ẩn Thân: BẬT" or "Tàng Hình Cục Bộ Ẩn Thân: TẮT"
-    InvisBtn.BackgroundColor3 = invisible and Color3.fromRGB(0, 255, 255) or Color3.fromRGB(50, 50, 50)
-    if LocalPlayer.Character then
-        for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
-            if part:IsA("BasePart") or part:IsA("Decal") then
-                if part.Name ~= "HumanoidRootPart" then part.Transparency = invisible and 1 or 0 end
-            end
-        end
-    end
-end)
-
--- ==========================================
---  [MỚI] LOGIC XỬ LÝ LỌC TÌM KIẾM (SEARCH FILTER)
--- ==========================================
-SearchBar:GetPropertyChangedSignal("Text"):Connect(function()
-    local textInput = string.lower(SearchBar.Text)
-    
-    -- Duyệt qua tất cả các phần tử nằm trong ô cuộn danh sách Container
-    for _, child in pairs(Container:GetChildren()) do
-        if child:IsA("TextButton") or child:IsA("TextBox") then
-            -- Nếu từ khóa rỗng, hiển thị lại toàn bộ các nút
-            if textInput == "" then
-                child.Visible = true
-            else
-                -- So sánh tên đối tượng viết thường với từ khóa tìm kiếm
-                if string.find(string.lower(child.Name), textInput) then
-                    child.Visible = true
-                else
-                    child.Visible = false -- Ẩn nút nếu không trùng từ khóa
-                end
-            end
-        end
-    end
-end)
-
--- ==========================================
---  HIỆU ỨNG CHẠY KHI MỞ
--- ==========================================
-task.wait(1.5)
-SubText.Text = "Nạp thanh công cụ Search Engine..."
-task.wait(1)
-LoadingFrame:Destroy()
-MenuIcon.Visible = true
+-- 4. Wallhop Nhảy bám tường
+local WallhopBtn = CreateButton("Wallhop Nhảy Bám Tường: TẮT", 4)
+local wallhopEnabled = false
+WallhopBtn.MouseButton1Click:Connect(function()
+    wallhopEnabled = not wallhopEnabled
+    WallhopBtn.Text = wallhopEnabled and "Wallhop Nhảy Bám Tường: BẬT" or "Wallhop Nhảy Bám Tường: TẮT"
+    WallhopBtn.BackgroundColor3 = wallhopEnabled and Color3.fromRGB(0, 255, 150) or Color3.fromRGB(45, 45, 45)
+    WallhopBtn.TextColor3 = wallhopEnabled and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(255, 2
+            
 
 
